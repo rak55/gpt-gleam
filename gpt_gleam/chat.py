@@ -1,7 +1,8 @@
+
 import time
 from typing import Optional
 from gpt_gleam.configuration import ChatCompletionConfig
-from gpt_gleam.data import Frame, Post, Stance
+from gpt_gleam.data import Post
 
 from openai import OpenAI, BadRequestError
 from openai.types.chat import ChatCompletion
@@ -57,16 +58,15 @@ class ChatContextCreator:
     def __init__(self, config: ChatCompletionConfig):
         self.config = config
         self.system_prompt = self.config.system_prompt.strip()
-        self.user_prompt = self.config.user_prompt.strip()
+        #self.user_prompt = self.config.user_prompt.strip()
 
     def create_text_prompt(self, content: str):
         return {"role": "user", "content": content}
 
-    def create_image_prompt(self, content: str, image_url: str):
+    def create_image_prompt(self, image_url: str):
         return {
             "role": "user",
             "content": [
-                {"type": "text", "text": content},
                 {
                     "type": "image_url",
                     "image_url": image_url,
@@ -80,25 +80,21 @@ class ChatContextCreator:
         ]
         return messages
 
-    def build_prompt(self, post: Post, frame: Frame, stance: Optional[Stance] = None, **kwargs) -> str:
+    def build_prompt(self, post: Post, **kwargs) -> str:
         values = {
             "post": post.text,
-            "frame": frame.text,
+            "frame": post.frames,
+            "rationale":post.rationale
         }
-        if stance is not None:
-            values["stance"] = stance.value
         values = {**values, **kwargs}
         content = self.user_prompt.format(**values)
         return content
 
-    def create_prompt(self, post: Post, frame: Frame, stance: Optional[Stance] = None, **kwargs):
-        content = self.build_prompt(post, frame, stance, **kwargs)
-        if post.image_url is None:
-            return self.create_text_prompt(content)
-        else:
-            return self.create_image_prompt(content, post.image_url)
+    def create_prompt(self, post: Post, **kwargs):
+        #content = self.build_prompt(post, **kwargs)
+        return self.create_image_prompt(post.image_url)
 
-    def create_context(self, post: Post, frame: Frame, stance: Optional[Stance] = None, **kwargs):
+    def create_context(self, post: Post, **kwargs):
         messages = self.build_context()
-        messages.append(self.create_prompt(post, frame, stance, **kwargs))
+        messages.append(self.create_prompt(post, **kwargs))
         return messages
