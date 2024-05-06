@@ -10,4 +10,3 @@ class ChatCompletionConfig:
     temperature: float
     top_p: float
     system_prompt: str
-    user_prompt: str
