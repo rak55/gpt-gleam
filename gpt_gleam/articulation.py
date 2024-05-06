@@ -27,10 +27,10 @@ def main(
         timeout=os.getenv("OPENAI_TIMEOUT", 90),
     )
 
-    if total is None:
+    '''if total is None:
         print("Counting total number of examples (requires iteration)...")
         total = len(dataset)
-        print(f"Total predictions: {total:,}")
+        print(f"Total predictions: {total:,}")'''
 
     with JsonlPredictionsWriter(output_path) as preds, ChatCompletionProgress(
         total=total, seen=len(preds), disable=debug
