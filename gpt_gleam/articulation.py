@@ -8,7 +8,7 @@ from openai import OpenAI
 from tqdm import tqdm
 from gpt_gleam.chat import ChatContextCreator, chat, print_messages
 from gpt_gleam.configuration import ChatCompletionConfig
-from gpt_gleam.data import read_jsonl, Post, Frame, iterate_data
+from gpt_gleam.data import read_jsonl, Post, iterate_data
 from gpt_gleam.predictions import JsonlPredictionsWriter
 from gpt_gleam.progress import ChatCompletionProgress
 
