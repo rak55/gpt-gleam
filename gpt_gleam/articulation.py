@@ -22,6 +22,7 @@ def main(
     debug: bool = False,
 ):
     creator = ChatContextCreator(config)
+    print(os.getenv("OPENAI_API_KEY"))
     client = OpenAI(
         api_key=os.getenv("OPENAI_API_KEY"),
         timeout=os.getenv("OPENAI_TIMEOUT", 90),
